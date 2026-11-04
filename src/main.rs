@@ -1,4 +1,3 @@
-
 // Roulette Game in RUST Programming Language
 use std::io;
 use std::collections::HashMap;
@@ -23,6 +22,8 @@ fn main() {
 	let many_spins = spin_x(&wheel, 1_000_000);
 	// println!("{}", string_pockets(&many_spins, &colors));
 	print_results(&wheel_type, &wheel, &many_spins, &colors);
+	println!();
+	print_wheel(&wheel_type, &wheel, &colors);
 	// print_pocket(&spin(&wheel), &colors);
 	// println!();
 	// print_pocket(&spin(&wheel), &colors);
@@ -30,7 +31,6 @@ fn main() {
 	let few_spins = spin_x(&wheel, 60);
 	print_pockets(&few_spins, &colors);
 	print_results(&wheel_type, wheel, &few_spins, &colors);
-
 	println!();
 	print_wheel(&wheel_type, &wheel, &colors);
 	let elapsed = start.elapsed();
@@ -130,7 +130,7 @@ fn print_results(wheel_type: &String, wheel: &[u8], pockets: &Vec<u8>, colors: &
 	let color_order = ['R', 'B', 'G'];
 	let color_word: HashMap<char, &str> = HashMap::from([('R'," Red "), ('B', "Black"), ('G', "Green")]);
 	println!("\nResults for {} Roulette wheel after {} spins", wheel_type, pockets.len());
-	println!("-------------------------------------");
+	println!("----------------------------------------");
 	let mut freq_color:HashMap<char, i32> = HashMap::from([('R',0), ('B', 0), ('G', 0),]); // Create color counters
 	let mut freq_number: HashMap<u8, u32> = HashMap::new();
 	for number in wheel {  // Create Number Frequecy HashMap Totals
@@ -146,7 +146,7 @@ fn print_results(wheel_type: &String, wheel: &[u8], pockets: &Vec<u8>, colors: &
 		print_pocket(pocket, colors);
 		println!("pocket = {:2} occurances {:5.2}%", freq_number[&pocket], percent_pocket);
 	}
-	println!("-------------------------------------");
+	println!("----------------------------------------");
 	for color in color_order {
 		let str_color = color_word[&color].to_string() + " pockets";
 		match color {
