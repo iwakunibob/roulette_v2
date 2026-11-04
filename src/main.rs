@@ -93,7 +93,7 @@ fn print_wheel(wheel_type: &String, wheel: &[u8], colors: &HashMap<u8, char>) {
 	for pocket in wheel {
 		print_pocket(pocket, colors);
 	}
-	println!()
+	println!("\n")
 }
 
 fn print_pocket(pocket: &u8, colors: &HashMap<u8, char>){
@@ -124,7 +124,7 @@ fn print_pockets_vertical(wheel_type: &String, pockets: &Vec<u8>, colors: &HashM
 
 fn print_pockets_horizontal(wheel_type: &String ,pockets: &Vec<u8>, colors: &HashMap<u8, char>) {
 	let spin_total:usize = pockets.len();
-	println!("\n{} wheel all {} spins below:", wheel_type, spin_total);
+	println!("{} wheel all {} spins below:", wheel_type, spin_total);
 	let rows: usize = spin_total/SCALE;
 	let mut label_count: usize = 1;
 	let mut pocket_count: usize = 0;
@@ -132,7 +132,7 @@ fn print_pockets_horizontal(wheel_type: &String ,pockets: &Vec<u8>, colors: &Has
 		let mut col: usize = 1;
 		while col % (SCALE + 1) != 0 {
 			if label_count < spin_total + 1 {
-				print!("{:>3}_", label_count);
+				print!("{:>3} ", label_count);
 				label_count += 1;
 			}
 			col += 1;
@@ -167,7 +167,7 @@ fn spin_x(wheel: &[u8], spins: usize) -> Vec<u8> {
 fn print_results(wheel_type: &String, wheel: &[u8], pockets: &Vec<u8>, colors: &HashMap<u8, char>) {
 	let color_order = ['R', 'B', 'G'];
 	let color_word: HashMap<char, &str> = HashMap::from([('R',"Red  "), ('B', "Black"), ('G', "Green")]);
-	println!("\nResults for {} Roulette wheel after {} spins", wheel_type, pockets.len());
+	println!("Results for {} Roulette wheel after {} spins", wheel_type, pockets.len());
 	println!("----------------------------------------");
 	let mut freq_color:HashMap<char, i32> = HashMap::from([('R',0), ('B', 0), ('G', 0),]); // Create color counters
 	let mut freq_number: HashMap<u8, u32> = HashMap::new();
