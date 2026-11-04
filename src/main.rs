@@ -1,5 +1,5 @@
 // Roulette Game in RUST Programming Language
-use std::io;
+use std::{io};
 use std::collections::HashMap;
 use rand::prelude::*;
 use std::time::Instant;
@@ -11,6 +11,7 @@ const AMERICAN_WHEEL: [u8; 38] = [0, 28, 9, 26, 30, 11, 7, 20, 32, 17, 5, 22, 34
 	24, 36, 13, 1, 100, 27, 10, 25, 29, 12, 8, 19, 31, 18, 6, 21, 33, 16, 4, 23, 35, 14, 2];
 const RED_NUMBERS: [u8; 18] = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
 const BLACK_NUMBERS: [u8; 18] = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35];
+const SCALE: usize = 25;  // Scaling factor for print pockets_horizontal_print
 // Formerly version 1 program was 168ms for 1M spins attempting to speed up using arrays not vectors
 fn main() {
 	println!("start");
@@ -19,23 +20,28 @@ fn main() {
 	let colors: HashMap<u8, char> = create_color_map(&wheel);
 	let start = Instant::now();
 	std::thread::sleep(std::time::Duration::from_millis(100));
-	let many_spins = spin_x(&wheel, 1_000_000);
-	// println!("{}", string_pockets(&many_spins, &colors));
-	print_results(&wheel_type, &wheel, &many_spins, &colors);
+	// let many_spins = spin_x(&wheel, 1_000_000);
+	// // println!("{}", string_pockets(&many_spins, &colors));
+	// print_results(&wheel_type, &wheel, &many_spins, &colors);
 	println!();
-	print_wheel(&wheel_type, &wheel, &colors);
+	
 	// print_pocket(&spin(&wheel), &colors);
 	// println!();
 	// print_pocket(&spin(&wheel), &colors);
 	// println!();
 	let few_spins = spin_x(&wheel, 60);
-	print_pockets(&few_spins, &colors);
 	print_results(&wheel_type, wheel, &few_spins, &colors);
-	println!();
 	print_wheel(&wheel_type, &wheel, &colors);
+	print_pockets_horizontal(&wheel_type,&few_spins, &colors);
+	// print_pockets_vertical(&wheel_type, &few_spins, &colors);
+	println!();
+	// print_wheel(&wheel_type, &wheel, &colors);
+	let less_spins = spin_x(&wheel, 12);
+	// print_results(&wheel_type, wheel, &less_spins, &colors);
+	// print_wheel(&wheel_type, &wheel, &colors);
+	print_pockets_horizontal(&wheel_type,&less_spins, &colors);
 	let elapsed = start.elapsed();
-	println!("Elapsed time: {:.2?}", elapsed);
-	println!("Done")
+	println!("\nElapsed time: {:.2?}", elapsed);
 }
 
 fn select_wheel() -> String {
@@ -83,10 +89,11 @@ fn create_color_map(wheel: &[u8])-> HashMap<u8, char> {
 }
 
 fn print_wheel(wheel_type: &String, wheel: &[u8], colors: &HashMap<u8, char>) {
+	println!("{} Wheel Total Pockets = {}", wheel_type, wheel.len());
 	for pocket in wheel {
 		print_pocket(pocket, colors);
 	}
-	println!("\nTotal {} Wheel Pockets = {}\n", wheel_type, wheel.len());
+	println!()
 }
 
 fn print_pocket(pocket: &u8, colors: &HashMap<u8, char>){
@@ -104,10 +111,41 @@ fn print_pocket(pocket: &u8, colors: &HashMap<u8, char>){
 	};
 }
 
-fn print_pockets(pockets: &Vec<u8>, colors: &HashMap<u8, char>) {
+fn print_pockets_vertical(wheel_type: &String, pockets: &Vec<u8>, colors: &HashMap<u8, char>) {
+	let spin_total = &pockets.len();
+	println!("{} wheel all {} spins below:", wheel_type, spin_total);
 	for (index, pocket) in pockets.iter().enumerate() {
 		print!("Spin {:>2}: ", index + 1);
 		print_pocket(pocket, colors);
+		println!();
+	}
+	println!();
+}
+
+fn print_pockets_horizontal(wheel_type: &String ,pockets: &Vec<u8>, colors: &HashMap<u8, char>) {
+	let spin_total:usize = pockets.len();
+	println!("\n{} wheel all {} spins below:", wheel_type, spin_total);
+	let rows: usize = spin_total/SCALE;
+	let mut label_count: usize = 1;
+	let mut pocket_count: usize = 0;
+	for row in 0..=rows {
+		let mut col: usize = 1;
+		while col % (SCALE + 1) != 0 {
+			if label_count < spin_total + 1 {
+				print!("{:>3}_", label_count);
+				label_count += 1;
+			}
+			col += 1;
+		}
+		println!();
+		col = 1;
+		while col % (SCALE + 1) != 0 {
+			if pocket_count < spin_total {
+				print_pocket(&pockets[pocket_count], colors);
+				pocket_count += 1;
+			}
+			col += 1;
+		}
 		println!();
 	}
 }
@@ -128,7 +166,7 @@ fn spin_x(wheel: &[u8], spins: usize) -> Vec<u8> {
 
 fn print_results(wheel_type: &String, wheel: &[u8], pockets: &Vec<u8>, colors: &HashMap<u8, char>) {
 	let color_order = ['R', 'B', 'G'];
-	let color_word: HashMap<char, &str> = HashMap::from([('R'," Red "), ('B', "Black"), ('G', "Green")]);
+	let color_word: HashMap<char, &str> = HashMap::from([('R',"Red  "), ('B', "Black"), ('G', "Green")]);
 	println!("\nResults for {} Roulette wheel after {} spins", wheel_type, pockets.len());
 	println!("----------------------------------------");
 	let mut freq_color:HashMap<char, i32> = HashMap::from([('R',0), ('B', 0), ('G', 0),]); // Create color counters
