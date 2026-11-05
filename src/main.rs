@@ -20,9 +20,9 @@ fn main() {
 	let colors: HashMap<u8, char> = create_color_map(&wheel);
 	let start = Instant::now();
 	std::thread::sleep(std::time::Duration::from_millis(100));
-	// let many_spins = spin_x(&wheel, 1_000_000);
-	// // println!("{}", string_pockets(&many_spins, &colors));
-	// print_results(&wheel_type, &wheel, &many_spins, &colors);
+	let many_spins = spin_x(&wheel, 1_000_000);
+	// println!("{}", string_pockets(&many_spins, &colors));
+	print_results(&wheel_type, &wheel, &many_spins, &colors);
 	println!();
 	
 	// print_pocket(&spin(&wheel), &colors);
